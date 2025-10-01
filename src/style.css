@@ -76,9 +76,6 @@ form button:hover {
   background: #1b4f72;
 }
 
-/* =======================
-   Tables
-======================= */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -105,9 +102,6 @@ table tr:hover {
   background: #f1f1f1;
 }
 
-/* =======================
-   Reminder Cards
-======================= */
 #reminderList {
   display: flex;
   flex-wrap: wrap;
@@ -134,9 +128,6 @@ table tr:hover {
   color: #2e86c1;
 }
 
-/* =======================
-   Buttons & Links
-======================= */
 button,
 .btn {
   background: #2e86c1;
