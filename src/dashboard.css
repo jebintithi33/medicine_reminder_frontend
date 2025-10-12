@@ -1,0 +1,230 @@
+/* ============ GLOBAL ============ */
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3f6f9;
+    margin: 0;
+    color: #333;
+}
+
+/* ============ NAVBAR ============ */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #007bff;
+    padding: 15px 30px;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-left h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.navbar-right button {
+    margin-left: 10px;
+}
+
+.logout {
+    background: #dc3545;
+    border: none;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.logout:hover {
+    background: #c82333;
+}
+
+.primary {
+    background: #28a745;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.primary:hover {
+    background: #218838;
+}
+
+/* ============ TABLE SECTION ============ */
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table-section h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #007bff;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+}
+
+.styled-table th {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    font-weight: 600;
+}
+
+.styled-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.styled-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* ACTION BUTTONS */
+.action-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px;
+}
+
+.action-btn.edit {
+    color: #007bff;
+}
+
+.action-btn.delete {
+    color: #dc3545;
+}
+
+.action-btn:hover {
+    opacity: 0.7;
+}
+
+/* ============ MODAL STYLING ============ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal {
+    background: white;
+    border-radius: 10px;
+    width: 380px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.close-btn {
+    font-size: 22px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.close-btn:hover {
+    color: #ffcccc;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.modal-form label {
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.modal-form input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modal-buttons #saveBtn {
+    background: #28a745;
+    color: white;
+}
+
+.modal-buttons #saveBtn:hover {
+    background: #218838;
+}
+
+.modal-buttons .cancel {
+    background: #6c757d;
+    color: white;
+}
+
+.modal-buttons .cancel:hover {
+    background: #5a6268;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hidden {
+    display: none;
+}

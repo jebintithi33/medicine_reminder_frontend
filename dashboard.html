@@ -1,37 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Dashboard - Medicine Reminder</title>
-    <link rel="stylesheet" href="/src/style.css" />
-  </head>
-  <body>
-    <h2>My Medicines</h2>
-    <form id="medicineForm">
-      <label>Medicine Name:</label>
-      <input type="text" id="medicineName" required />
-      <label>Frequency (times per day):</label>
-      <input type="number" id="frequency" required />
-      <label>Start Time:</label>
-      <input type="time" id="startTime" required />
-      <label>Interval (hours):</label>
-      <input type="number" id="interval" required />
-      <button type="submit">Add Medicine</button>
-    </form>
 
-    <h3>Medicine Schedule</h3>
-    <table id="medicineTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Next Dose</th>
-          <th>Countdown</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- JS will populate -->
-      </tbody>
-    </table>
-  </body>
-  <script src="js/app.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Medicine Reminder</title>
+  <link rel="stylesheet" href="/src/dashboard.css" />
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="navbar-left">
+      <h2>💊 Medicine Reminder</h2>
+    </div>
+    <div class="navbar-right">
+      <button id="addReminderBtn" class="primary">➕ Add Reminder</button>
+      <button id="logoutBtn" class="logout">Logout</button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+    <section class="table-section">
+      <h3>📅 Scheduled Reminders</h3>
+      <table id="medicineTable" class="styled-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Frequency</th>
+            <th>Start Time</th>
+            <th>Next Dose</th>
+            <th>Countdown</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- JS will populate -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Reminder</h3>
+        <span id="closeModal" class="close-btn">&times;</span>
+      </div>
+
+      <form id="medicineForm" class="modal-form">
+        <label>Medicine Name:</label>
+        <input type="text" id="medicineName" required />
+
+        <label>Frequency (times):</label>
+        <input type="number" id="frequency" required />
+
+        <label>Start Date:</label>
+        <input type="date" id="startDate" required />
+
+        <label>Start Time:</label>
+        <input type="time" id="startTime" required />
+
+        <label>Interval (hours):</label>
+        <input type="number" id="interval" required />
+
+        <div class="modal-buttons">
+          <button type="submit" id="saveBtn">💾 Save</button>
+          <button type="button" id="cancelBtn" class="cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/src/dashboard.js"></script>
+</body>
+
 </html>

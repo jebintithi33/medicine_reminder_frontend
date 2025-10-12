@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Login - Medicine Reminder</title>
-    <link rel="stylesheet" href="/src/style.css" />
-  </head>
-  <body>
-    <h2 class="center_position">Login</h2>
-    <div>
-      <form id="loginForm">
-        <label>Email:</label>
-        <input type="email" id="loginEmail" required />
-        <label>Password:</label>
-        <input type="password" id="loginPassword" required />
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Medicine Reminder</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body>
+  <h2 class="center_position">Login</h2>
+
+  <form id="loginForm">
+    <label for="login-username">Username:</label>
+    <input type="text" id="login-username" required />
+
+    <label for="login-password">Password:</label>
+    <input type="password" id="login-password" required />
+
+    <button type="submit">Login</button>
+
+    <p id="message"></p>
+  </form>
+
+  <p class="center_position">
+    Don’t have an account? <a href="register.html">Register</a>
+  </p>
+
+  <script src="/src/login.js"></script>
+</body>
+
 </html>
