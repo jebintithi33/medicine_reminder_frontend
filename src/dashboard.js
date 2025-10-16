@@ -15,6 +15,8 @@ const saveBtn = document.getElementById("saveBtn");
 const tableBody = document.querySelector("#medicineTable tbody");
 
 let editingId = null; // Track if editing
+let audio = null; // To store the audio object
+let alarmTimers = {}; // To keep track of alarm timers for each reminder
 
 // -------------------- MODAL CONTROL --------------------
 addReminderBtn.addEventListener("click", () => openModal());
@@ -114,14 +116,14 @@ function renderTable(reminders) {
   tableBody.innerHTML = "";
 
   if (!reminders || reminders.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="4">No reminders yet</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="8">No reminders yet</td></tr>`;
     return;
   }
 
   reminders.forEach((med) => {
     const nextDose = getNextDose(med.schedule);
     const tr = document.createElement("tr");
-    const formattedDate = new Date( med.startDate).toISOString().split('T')[0];
+    const formattedDate = new Date(med.startDate).toISOString().split('T')[0];
     const startDose = `${formattedDate} ${convertTo12HourFormat(med.startTime)}`;
 
     tr.innerHTML = `
@@ -129,18 +131,23 @@ function renderTable(reminders) {
       <td>${med.frequency}</td>
       <td>${startDose}</td>
       <td>${nextDose ? convertToAMPM(nextDose) : "Done"}</td>
-      <td>${nextDose ? getCountdown(nextDose) : "—"}</td>
+      <td>
+        <span id="countdown-${med._id}">${nextDose ? "—" : "—"}</span>
+      </td>
       <td>
         <button class="action-btn edit" onclick='editReminder(${JSON.stringify(
           med
         )})'>✏️</button>
         <button class="action-btn delete" onclick='deleteReminder("${med._id}")'>🗑️</button>
       </td>
+      <td>
+        <button class="action-btn stop hidden" id="stopBtn-${med._id}" onclick="stopMusic('${med._id}')">Stop ⏰</button>
+      </td>
     `;
 
     tableBody.appendChild(tr);
 
-    if (nextDose) startCountdown(tr.children[2], nextDose);
+    if (nextDose) startCountdown(med._id, nextDose);
   });
 }
 
@@ -180,35 +187,62 @@ function getCountdown(target) {
   if (diff <= 0) return "Now";
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff / (1000 * 60)) % 60);
-  return `${hours}h ${minutes}m`;
+  const seconds = Math.floor((diff / 1000) % 60);
+  return `${hours}h ${minutes}m ${seconds}s`;
 }
 
-function startCountdown(element, target) {
+function startCountdown(medId, target) {
   const targetTime = new Date(target).getTime();
-  let alertShown = false;
 
-  const interval = setInterval(() => {
+  alarmTimers[medId] = setInterval(() => {
     const now = Date.now();
     const diff = targetTime - now;
 
     if (diff <= 0) {
-      element.textContent = "Now";
-      clearInterval(interval);
+      document.getElementById(`countdown-${medId}`).textContent = "Now";
+      clearInterval(alarmTimers[medId]);
+      delete alarmTimers[medId];
       return;
     }
 
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    element.textContent = `${hours}h ${minutes}m`;
+    const seconds = Math.floor((diff / 1000) % 60);
+    document.getElementById(`countdown-${medId}`).textContent = `${hours}h ${minutes}m ${seconds}s`;
 
-    // 🔔 Alert 15 minutes before dose time
-    if (!alertShown && diff <= 15 * 60 * 1000) {
-      alert("⏰ Reminder: Your medicine time is in 15 minutes!");
-      alertShown = true;
+    // 🔔 Play music 15 minutes before dose time (no alert, just music)
+    if (diff <= 52 * 60 * 1000) {
+      if (diff >= 51 * 60 * 1000 && diff <= 52 * 60 * 1000){
+         // Show the stop button when music starts
+  const stopBtn = document.getElementById(`stopBtn-${medId}`);
+  if (stopBtn) stopBtn.classList.remove("hidden");
+      }
+      playMusic(medId);
     }
-  }, 60000); // update every 1 minute
+  }, 1000); // update every second
 }
 
+function playMusic(medId) {
+  if (audio) {
+    audio.pause(); // Stop the previous audio
+  }
+  audio = new Audio('./ring.mp3'); // Simple beep sound
+  audio.play();
+}
+
+// -------------------- STOP MUSIC --------------------
+function stopMusic(medId) {
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0; // Reset the music
+  }
+
+  // Hide the stop button after stopping the music
+  const stopBtn = document.getElementById(`stopBtn-${medId}`);
+  if (stopBtn) stopBtn.classList.add("hidden");
+  
+  // No need to show alert when music stops
+}
 
 // -------------------- EDIT / DELETE --------------------
 window.editReminder = (med) => openModal(med);
