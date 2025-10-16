@@ -6,18 +6,44 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <header>
-      <h1 id="welcome">Welcome to Medicine Reminder</h1>
-      <nav>
-        <a href="register.html">Register</a> |
-        <a href="login.html">Login</a>
-      </nav>
+    <header class="header">
+      <div class="container">
+        <h1 id="welcome" class="title">Welcome to Medicine Reminder</h1>
+        <nav class="navbar">
+          <a href="register.html" class="nav-link">Register</a>
+          <a href="login.html" class="nav-link">Login</a>
+        </nav>
+      </div>
     </header>
+    
     <main>
-      <p>
-        A simple app to keep track of your medicines with reminders and reports.
-      </p>
+      <!-- Hero Section -->
+      <section class="hero">
+        <h2>A simple app to keep track of your medicines with reminders and reports.</h2>
+        <button class="cta-btn">Get Started</button>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features">
+        <div class="feature-card">
+          <h3>Track Reminders</h3>
+          <p>Set up personalized medicine reminders with frequency and time intervals.</p>
+        </div>
+        <div class="feature-card">
+          <h3>View Reports</h3>
+          <p>Track your progress with daily and weekly medicine reminders.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Simple & Clean</h3>
+          <p>An easy-to-use interface to help you stay on top of your medicine schedule.</p>
+        </div>
+      </section>
     </main>
+
+    <footer>
+      <p>&copy; 2025 Medicine Reminder. All rights reserved.</p>
+    </footer>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
