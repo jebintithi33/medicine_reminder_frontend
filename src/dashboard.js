@@ -121,12 +121,14 @@ function renderTable(reminders) {
   reminders.forEach((med) => {
     const nextDose = getNextDose(med.schedule);
     const tr = document.createElement("tr");
+    const formattedDate = new Date( med.startDate).toISOString().split('T')[0];
+    const startDose = `${formattedDate} ${convertTo12HourFormat(med.startTime)}`;
 
     tr.innerHTML = `
       <td>${med.name}</td>
       <td>${med.frequency}</td>
-      <td>${med.startTime}</td>
-      <td>${nextDose ? new Date(nextDose).toLocaleString() : "Done"}</td>
+      <td>${startDose}</td>
+      <td>${nextDose ? convertToAMPM(nextDose) : "Done"}</td>
       <td>${nextDose ? getCountdown(nextDose) : "—"}</td>
       <td>
         <button class="action-btn edit" onclick='editReminder(${JSON.stringify(
@@ -143,6 +145,31 @@ function renderTable(reminders) {
 }
 
 // -------------------- UTILITIES --------------------
+function convertTo12HourFormat(time24) {
+  const [hours, minutes] = time24.split(':').map(Number);
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const hour12 = hours % 12 || 12;
+  return `${hour12}:${String(minutes).padStart(2, '0')} ${period}`;
+}
+
+function convertToAMPM(utcTime) {
+  const date = new Date(utcTime);
+
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true 
+  };
+
+  const amPmTime = date.toLocaleString('en-US', options);
+  
+  return amPmTime;
+}
+
 function getNextDose(schedule) {
   const now = new Date();
   return schedule.map((d) => new Date(d)).find((d) => d > now) || null;
