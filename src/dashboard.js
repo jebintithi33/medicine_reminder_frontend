@@ -14,11 +14,35 @@ const cancelBtn = document.getElementById("cancelBtn");
 const saveBtn = document.getElementById("saveBtn");
 const tableBody = document.querySelector("#medicineTable tbody");
 
-let editingId = null; // Track if editing
-let audio = null; // To store the audio object
-let alarmTimers = {}; // To keep track of alarm timers for each reminder
+let editingId = null; 
+let audio = null; 
+let alarmTimers = {}; 
+let musicPlayed = {}; 
 
-// -------------------- MODAL CONTROL --------------------
+if (localStorage.getItem("soundEnabled") !== "true") {
+
+  document.addEventListener(
+    "click",
+    () => {
+      const unlock = new Audio();
+      unlock.muted = true;
+
+      unlock
+        .play()
+        .then(() => {
+          console.log("🔓 Audio unlocked after user interaction");
+          localStorage.setItem("soundEnabled", "true");
+          alert("🔔 Sound enabled for reminders.");
+        })
+        .catch((err) => {
+          console.warn("⚠️ Failed to unlock audio:", err);
+        });
+    },
+    { once: true } 
+  );
+}
+
+
 addReminderBtn.addEventListener("click", () => openModal());
 cancelBtn.addEventListener("click", closeModal);
 
@@ -27,7 +51,6 @@ function openModal(reminder = null) {
   form.reset();
 
   if (reminder) {
-    // 📝 Editing existing reminder
     modalTitle.textContent = "Update Reminder";
     saveBtn.textContent = "Update";
     editingId = reminder._id;
@@ -37,7 +60,6 @@ function openModal(reminder = null) {
     document.getElementById("startTime").value = reminder.startTime;
     document.getElementById("interval").value = reminder.minInterval;
   } else {
-    // 🆕 New reminder defaults
     modalTitle.textContent = "Add Reminder";
     saveBtn.textContent = "Save";
     editingId = null;
@@ -59,7 +81,6 @@ function closeModal() {
   modalOverlay.classList.add("hidden");
 }
 
-// -------------------- ADD / UPDATE REMINDER --------------------
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -98,7 +119,6 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// -------------------- FETCH REMINDERS --------------------
 async function fetchReminders() {
   try {
     const res = await fetch(API_URL, {
@@ -111,7 +131,6 @@ async function fetchReminders() {
   }
 }
 
-// -------------------- RENDER TABLE --------------------
 function renderTable(reminders) {
   tableBody.innerHTML = "";
 
@@ -151,7 +170,6 @@ function renderTable(reminders) {
   });
 }
 
-// -------------------- UTILITIES --------------------
 function convertTo12HourFormat(time24) {
   const [hours, minutes] = time24.split(':').map(Number);
   const period = hours >= 12 ? 'PM' : 'AM';
@@ -210,41 +228,53 @@ function startCountdown(medId, target) {
     const seconds = Math.floor((diff / 1000) % 60);
     document.getElementById(`countdown-${medId}`).textContent = `${hours}h ${minutes}m ${seconds}s`;
 
-    // 🔔 Play music 15 minutes before dose time (no alert, just music)
-    if (diff <= 52 * 60 * 1000) {
-      if (diff >= 51 * 60 * 1000 && diff <= 52 * 60 * 1000){
-         // Show the stop button when music starts
-  const stopBtn = document.getElementById(`stopBtn-${medId}`);
-  if (stopBtn) stopBtn.classList.remove("hidden");
-      }
+    const alertInput = document.getElementById("alertTime");
+    const alertMinutes = parseInt(alertInput?.value || 15, 10); 
+    if (
+      diff <= alertMinutes * 60 * 1000 &&
+      diff > (alertMinutes - 1) * 60 * 1000 &&
+      !musicPlayed[medId]
+    ) {
+      musicPlayed[medId] = true; 
       playMusic(medId);
     }
-  }, 1000); // update every second
+  }, 1000);
 }
+
+
 
 function playMusic(medId) {
   if (audio) {
-    audio.pause(); // Stop the previous audio
+    audio.pause();
+    audio.currentTime = 0;
+    clearTimeout(stopTimeout);
   }
-  audio = new Audio('./ring.mp3'); // Simple beep sound
-  audio.play();
+
+  const stopBtn = document.getElementById(`stopBtn-${medId}`);
+  if (stopBtn) stopBtn.classList.remove("hidden");
+
+  audio = new Audio('src/ring.mp3');
+  audio.loop = true;
+  audio.play().catch((err) => console.warn("Autoplay blocked:", err));
+
+  stopTimeout = setTimeout(() => {
+    stopMusic(medId);
+  }, 60000); 
 }
 
-// -------------------- STOP MUSIC --------------------
 function stopMusic(medId) {
   if (audio) {
     audio.pause();
-    audio.currentTime = 0; // Reset the music
+    audio.currentTime = 0;
   }
+  clearTimeout(stopTimeout);
+  stopTimeout = null;
 
-  // Hide the stop button after stopping the music
   const stopBtn = document.getElementById(`stopBtn-${medId}`);
   if (stopBtn) stopBtn.classList.add("hidden");
-  
-  // No need to show alert when music stops
 }
 
-// -------------------- EDIT / DELETE --------------------
+
 window.editReminder = (med) => openModal(med);
 
 window.deleteReminder = async (id) => {
@@ -263,14 +293,12 @@ window.deleteReminder = async (id) => {
   }
 };
 
-// -------------------- LOGOUT --------------------
 logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("token");
   localStorage.removeItem("username");
   window.location.href = "login.html";
 });
 
-// -------------------- INIT --------------------
 fetchReminders();
 
 const closeModalBtn = document.getElementById("closeModal");
