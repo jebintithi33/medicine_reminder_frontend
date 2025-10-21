@@ -3,7 +3,7 @@ const token = localStorage.getItem("token");
 
 if (!token) {
   window.location.href = "login.html";
-}
+} 
 
 const addReminderBtn = document.getElementById("addReminderBtn");
 const logoutBtn = document.getElementById("logoutBtn");
